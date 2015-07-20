@@ -2,5 +2,9 @@
     <string name="app_name">ABC2015Summer</string>
 
     <string name="message">只今、絶賛アプリ開発中!!!!!\nソースコードこちらにアップしていきます。\nhttps://github.com/TakuKobayashi/ABC2015Summer</string>
+    <string name="progressMessage">進捗率: </string>
+    <string name="progressRate">%1$d / %2$d</string>
+    本を%1$d冊買います
+
     <string name="action_settings">Settings</string>
 </resources>

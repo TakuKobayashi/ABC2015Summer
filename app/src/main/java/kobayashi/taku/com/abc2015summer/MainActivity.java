@@ -1,9 +1,12 @@
 package kobayashi.taku.com.abc2015summer;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
@@ -12,6 +15,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        TextView progressRate = (TextView) findViewById(R.id.progressRateLabel);
+        progressRate.setText(getString(R.string.progressRate, progressBar.getProgress(), progressBar.getMax()));
     }
 
     @Override
