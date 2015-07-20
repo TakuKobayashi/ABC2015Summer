@@ -22,5 +22,10 @@
         android:layout_height="wrap_content" android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
+    <TextView android:id="@+id/speechRecognizeLabel" android:text="@string/speechRecognizeMessage" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_below="@+id/progressBarLayout"/>
+
+    <TextView android:id="@+id/speechRecognizeResult" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_below="@+id/speechRecognizeLabel"/>
 
 </RelativeLayout>

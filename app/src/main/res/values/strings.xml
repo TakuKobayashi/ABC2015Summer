@@ -6,5 +6,6 @@
     <string name="progressRate">%1$d / %2$d</string>
     本を%1$d冊買います
 
+    <string name="speechRecognizeMessage">音声認識中...しゃべってみてね♪</string>
     <string name="action_settings">Settings</string>
 </resources>

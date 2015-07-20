@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="kobayashi.taku.com.abc2015summer" >
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 録音のパーミッション -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
