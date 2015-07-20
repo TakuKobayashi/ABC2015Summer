@@ -5,14 +5,22 @@
     <TextView android:id="@+id/message" android:text="@string/message" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:textSize="60dp" android:autoLink="web"/>
 
-    <TextView android:id="@+id/progressBarLabel" android:text="@string/progressMessage" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:layout_below="@+id/message" android:layout_alignParentLeft="true"/>
+    <RelativeLayout
+        android:id="@+id/progressBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/message">
 
-    <ProgressBar android:id="@+id/progressBar" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:layout_below="@+id/message" style="?android:attr/progressBarStyleHorizontal" android:progress="0" android:max="100" android:layout_toRightOf="@+id/progressBarLabel" android:layout_toLeftOf="@+id/progressRateLabel"/>
+        <TextView android:id="@+id/progressBarLabel" android:text="@string/progressMessage" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true"/>
 
-    <TextView android:id="@+id/progressRateLabel" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:layout_below="@+id/message" android:layout_alignParentRight="true"/>
+        <ProgressBar android:id="@+id/progressBar" android:layout_width="match_parent"
+        android:layout_height="wrap_content" style="?android:attr/progressBarStyleHorizontal" android:progress="1" android:max="100" android:layout_toRightOf="@+id/progressBarLabel" android:layout_toLeftOf="@+id/progressRateLabel"/>
+
+        <TextView android:id="@+id/progressRateLabel" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentRight="true"/>
+    </RelativeLayout>
 
 
 </RelativeLayout>
