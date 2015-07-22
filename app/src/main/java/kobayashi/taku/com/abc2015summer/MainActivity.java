@@ -2,7 +2,9 @@ package kobayashi.taku.com.abc2015summer;
 
 import android.app.Activity;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +24,9 @@ public class MainActivity extends Activity {
     private boolean bIsRecording;
     private byte[] mRecordingBuffer;
     private static final int SAMPLING_RATE = 44100;
+    private AudioTrack mAudioTrack;
     private AudioView mAudioView;
+    private long mTime = System.currentTimeMillis();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,7 @@ public class MainActivity extends Activity {
 
 
         mSpeechRecognizeResult = (TextView) findViewById(R.id.speechRecognizeResult);
-
+/*
         mSpeechRecognizerController = new SpeechRecognizerController(this);
         mSpeechRecognizerController.setSpeechRecognitionResultCallback(new SpeechRecognizerController.SpeechRecognitionResultCallback() {
             @Override
@@ -50,13 +54,19 @@ public class MainActivity extends Activity {
 
             }
         });
+        */
     }
 
     private void startRecording(){
-        mRecordingBuffer = new byte[AudioRecord.getMinBufferSize(SAMPLING_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 2];
+        mRecordingBuffer = new byte[AudioRecord.getMinBufferSize(SAMPLING_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)];
         mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLING_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, mRecordingBuffer.length);
 
         mAudioRecord.startRecording();
+
+        mAudioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, SAMPLING_RATE,
+                AudioFormat.CHANNEL_OUT_MONO,
+                AudioFormat.ENCODING_PCM_16BIT, mRecordingBuffer.length, AudioTrack.MODE_STREAM);
+        mAudioTrack.play();
         bIsRecording = true;
         // 録音スレッド
         new Thread(new Runnable() {
@@ -64,7 +74,13 @@ public class MainActivity extends Activity {
             public void run() {
                 while (bIsRecording) {
                     // 録音データ読み込み
-                    mAudioRecord.read(mRecordingBuffer, 0, mRecordingBuffer.length);
+                    int bufferReadResult = mAudioRecord.read(mRecordingBuffer, 0, mRecordingBuffer.length);
+                    byte[] tmpBuf = new byte[bufferReadResult];
+                    System.arraycopy(mRecordingBuffer, 0, tmpBuf, 0, bufferReadResult);
+                    mAudioTrack.write(mRecordingBuffer, 0, mRecordingBuffer.length);
+                    long current = System.currentTimeMillis();
+                    Log.d(TAG, "time:" + (mTime - current)+ " Buffer:" + mRecordingBuffer.length + " sessionId:" + mAudioTrack.getAudioSessionId());
+                    mTime = current;
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -72,6 +88,7 @@ public class MainActivity extends Activity {
                         }
                     });
                 }
+                mAudioTrack.stop();
                 mAudioRecord.stop();
             }
         }).start();
@@ -102,14 +119,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        mSpeechRecognizerController.start();
+        //mSpeechRecognizerController.start();
         startRecording();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mSpeechRecognizerController.stop();
+        //mSpeechRecognizerController.stop();
         bIsRecording = false;
     }
 
@@ -117,6 +134,6 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mAudioView.release();
-        mSpeechRecognizerController.finish();
+        //mSpeechRecognizerController.finish();
     }
 }
