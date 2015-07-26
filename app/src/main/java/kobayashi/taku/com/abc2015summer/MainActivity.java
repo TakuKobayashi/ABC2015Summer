@@ -14,6 +14,15 @@ import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Socket;
+import com.github.nkzawa.socketio.client.IO;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+
+import java.net.URISyntaxException;
+
 
 public class MainActivity extends Activity {
     private SpeechRecognizerController mSpeechRecognizerController;
@@ -27,6 +36,7 @@ public class MainActivity extends Activity {
     private AudioTrack mAudioTrack;
     private AudioView mAudioView;
     private long mTime = System.currentTimeMillis();
+    private Socket mSocket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +91,7 @@ public class MainActivity extends Activity {
                     long current = System.currentTimeMillis();
                     Log.d(TAG, "time:" + (mTime - current)+ " Buffer:" + mRecordingBuffer.length + " sessionId:" + mAudioTrack.getAudioSessionId());
                     mTime = current;
+                    if(mSocket != null && mSocket.connected()) mSocket.emit("message", new Gson().toJson(mRecordingBuffer));
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -92,6 +103,76 @@ public class MainActivity extends Activity {
                 mAudioRecord.stop();
             }
         }).start();
+    }
+
+    private void ConnectionSocketIO(){
+        try {
+            mSocket = IO.socket("http://192.168.1.13:3001");
+            mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+                @Override
+                public void call(Object... arg0) {
+                    Log.d(Config.TAG, "connect!!");
+                    for(Object o : arg0){
+                        Log.d(Config.TAG, "connect:" + o.toString());
+                    }
+                }
+            });
+            mSocket.on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
+                @Override
+                public void call(Object... arg0) {
+                    Log.d(Config.TAG, "error!!");
+                    for(Object o : arg0){
+                        Log.d(Config.TAG, "error:" + o.toString());
+                    }
+                }
+            });
+            mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
+                @Override
+                public void call(Object... arg0) {
+                    Log.d(Config.TAG, "timeout!!");
+                    for(Object o : arg0){
+                        Log.d(Config.TAG, "timeout:" + o.toString());
+                    }
+                }
+            });
+            mSocket.on("message", new Emitter.Listener() {
+                @Override
+                public void call(Object... arg0) {
+                    Log.d(Config.TAG, "message!!:" + arg0.length);
+                    for(Object o : arg0){
+                        Log.d(Config.TAG, "className:" + o.getClass().getName());
+                        Log.d(Config.TAG, "message:" + o.toString());
+                    }
+                }
+            });
+            mSocket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+                @Override
+                public void call(Object... arg0) {
+                    Log.d(Config.TAG, "discomment!!");
+                    for(Object o : arg0){
+                        Log.d(Config.TAG, "discomment:" + o.toString());
+                    }
+                }
+            });
+            mSocket.connect();
+        } catch (URISyntaxException e) {
+            Log.d(Config.TAG, "error:" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ConnectionSocketIO();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mSocket != null && mSocket.connected()){
+            mSocket.disconnect();
+        }
     }
 
     @Override
