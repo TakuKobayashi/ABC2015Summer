@@ -6,5 +6,7 @@
     <string name="progressRate">%1$d / %2$d</string>
 
     <string name="speechRecognizeMessage">この空間の音声の波形を表示中。静かになるとおさまります。</string>
+    <string name="bluetoothSampleButtonText">Bluetoothの実験はこちら</string>
+    <string name="audioSampleButtonText">音の実験はこちら</string>
     <string name="action_settings">Settings</string>
 </resources>

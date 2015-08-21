@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView android:id="@+id/wavMessage1" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true"/>
+<!--
+    <kobayashi.taku.com.abc2015summer.AudioView android:id="@+id/audioWavView1" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_below="@+id/wavMessage1"/>
+
+    <TextView android:id="@+id/wavMessage2" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_below="@+id/audioWavView1"/>
+
+    <kobayashi.taku.com.abc2015summer.AudioView android:id="@+id/audioWavView2" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_below="@+id/wavMessage2"/>
+
+    <TextView android:id="@+id/wavMessage3" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_below="@+id/audioWavView2"/>
+
+    <kobayashi.taku.com.abc2015summer.AudioView android:id="@+id/audioWavView3" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_below="@+id/wavMessage3"/>
+-->
+</RelativeLayout>
