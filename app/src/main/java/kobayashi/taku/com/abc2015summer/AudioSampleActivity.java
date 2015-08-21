@@ -19,6 +19,9 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 
@@ -44,9 +47,9 @@ public class AudioSampleActivity extends Activity {
 
     private void startRecording(){
         mRecordingBuffer = new byte[AudioRecord.getMinBufferSize(SAMPLING_RATE, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT)];
-        mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLING_RATE, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mRecordingBuffer.length);
+        //mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLING_RATE, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mRecordingBuffer.length);
 
-        mAudioRecord.startRecording();
+        //mAudioRecord.startRecording();
 
         mAudioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, SAMPLING_RATE,
                 AudioFormat.CHANNEL_OUT_STEREO,
@@ -58,10 +61,46 @@ public class AudioSampleActivity extends Activity {
             @Override
             public void run() {
                 while (bIsRecording) {
+                    ApplicationHelper.StreamFromUrl("http://192.168.1.9:3000/api/sound/stream?id=3", new ApplicationHelper.DownloadStreamCallback() {
+                        @Override
+                        public void onStreaming(byte[] bytes) {
+                            //Gson gson = new Gson();
+                            //int[] raws = gson.fromJson("[" + new String(bytes) + "]", int[].class);
+                            Log.d(TAG, "bytes:" + bytes.length);
+                            Log.d(TAG, "string:" + new String(bytes));
+                            //Log.d(TAG, "raws:" + raws.length);
+                            /*
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            DataOutputStream dos = new DataOutputStream(baos);
+                            try {
+                                for(int i=0; i < raws.length; ++i) {
+                                    dos.writeInt(raws[i]);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            mRecordingBuffer = baos.toByteArray();
+                            mAudioTrack.write(mRecordingBuffer, 0, mRecordingBuffer.length);
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAudioView.updateVisualizer(mRecordingBuffer);
+                                }
+                            });
+                            */
+                        }
+
+                        @Override
+                        public void onFinish(long totalBytes) {
+                            Log.d(TAG, "total:" + totalBytes);
+                            bIsRecording = false;
+                        }
+                    });
                     // 録音データ読み込み
-                    int bufferReadResult = mAudioRecord.read(mRecordingBuffer, 0, mRecordingBuffer.length);
-                    byte[] tmpBuf = new byte[bufferReadResult];
-                    System.arraycopy(mRecordingBuffer, 0, tmpBuf, 0, bufferReadResult);
+                    //int bufferReadResult = mAudioRecord.read(mRecordingBuffer, 0, mRecordingBuffer.length);
+                    //byte[] tmpBuf = new byte[bufferReadResult];
+                    //System.arraycopy(mRecordingBuffer, 0, tmpBuf, 0, bufferReadResult);
+                    /*
                     mAudioTrack.write(mRecordingBuffer, 0, mRecordingBuffer.length);
                     long current = System.currentTimeMillis();
                     Log.d(TAG, "time:" + (mTime - current)+ " Buffer:" + mRecordingBuffer.length + " sessionId:" + mAudioTrack.getAudioSessionId());
@@ -72,10 +111,10 @@ public class AudioSampleActivity extends Activity {
                             mAudioView.updateVisualizer(mRecordingBuffer);
                         }
                     });
-
+                    */
                 }
                 mAudioTrack.stop();
-                mAudioRecord.stop();
+                //mAudioRecord.stop();
             }
         }).start();
     }
@@ -115,7 +154,7 @@ public class AudioSampleActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        //startRecording();
+        startRecording();
     }
 
     @Override
